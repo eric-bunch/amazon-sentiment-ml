@@ -41,7 +41,7 @@ def to_binary(score):
 		return "pos"
 	else:
 		return "neg"
-		
+
 
 
 def find_features(document):
@@ -49,9 +49,9 @@ def find_features(document):
 	features = {}
 	for w in word_features:
 		features[w] = (w in words)
-		
+
 	return features
-		
+
 
 with gzip.open(genre + '_train.txt.gz') as f:
 	for index, line in enumerate(f):
@@ -60,7 +60,7 @@ with gzip.open(genre + '_train.txt.gz') as f:
 			text = line.split('\t')[1]
 			#review_text = [w.lower() for w in word_tokenize(text) if w.isalpha() and not w in stop_words]
 			review_text = [w.lower() for w in word_tokenize(text) if w.isalpha()]
-			
+
 			all_words += review_text
 			documents.append( (review_text, to_binary(score)) )
 
@@ -79,7 +79,7 @@ word_features = list(all_words.keys()[:int(math.floor( number_of_words * word_fe
 
 featuresets = [(find_features(rev), category) for (rev, category) in documents]
 
-ml_hash = {SklearnClassifier(MultinomialNB()): 'Multinomial Naive Bayes', SklearnClassifier(BernoulliNB()): 'Bernoulli Naive Bayes', 
+ml_hash = {SklearnClassifier(MultinomialNB()): 'Multinomial Naive Bayes', SklearnClassifier(BernoulliNB()): 'Bernoulli Naive Bayes',
 				SklearnClassifier(LogisticRegression()): 'Logistic Regression', SklearnClassifier(SGDClassifier()): 'SGD Classifier',
 				SklearnClassifier(LinearSVC()): 'Linear SVC' }
 
@@ -88,4 +88,3 @@ for algo in ml_hash.keys():
 	classifier = algo.train(featuresets)
 	with open(genre + " classifiers/Twitter/" + ml_hash[algo] + ".pickle", "wb") as save_classifier:
 		pickle.dump(classifier, save_classifier)
-
